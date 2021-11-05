@@ -12,7 +12,7 @@ que recoge tierra en un ambiente 2D.
 ## :computer: Ejecución
 
 El programa se ejecuta ingresando la siguiente línea en una consola
-desde el directorio `practica_4`:
+desde el directorio `practica_6`:
 
 ```bash
 python main.py
