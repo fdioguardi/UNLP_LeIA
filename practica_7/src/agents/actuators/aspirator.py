@@ -30,22 +30,28 @@ class AspiratorActuator(Actuator):
             random.choice(environment.adjacent_positions(self.agent.position))
         )
 
-    def act_after_sensing(self, environment: Environment) -> None:
+    def act_after_sensing(
+        self, environment: Environment, _: dict[str, bool]
+    ) -> None:
         """
         This method is used to perform the actuator's action after
         having sensed dirt in the environment.
 
         :param environment: The environment in which the actuator acts.
+        :param _: The information collected by sensors.
         """
 
         self.act(environment)
 
-    def act_after_not_sensing(self, environment: Environment) -> None:
+    def act_after_not_sensing(
+        self, environment: Environment, _: dict[str, bool]
+    ) -> None:
         """
         This method is used to perform the actuator's action after not
         sensing dirt in the environment.
 
         :param environment: The environment in which the actuator acts.
+        :param _: The information collected by sensors.
         """
 
         self.act(environment)

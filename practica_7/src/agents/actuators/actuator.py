@@ -22,20 +22,26 @@ class Actuator:
         """
         self.agent: Agent = agent
 
-    def act_after_sensing(self, _: Environment) -> None:
+    def act_after_sensing(
+        self, _env: Environment, _sense_info: dict[str, bool]
+    ) -> None:
         """
         This method is used to act after sensing something with a
         sensor.
 
-        :param _: The environment to act in.
+        :param _env: The environment to act in.
+        :param _sense_info: The information collected by sensors.
         """
         raise NotImplementedError
 
-    def act_after_not_sensing(self, _: Environment) -> None:
+    def act_after_not_sensing(
+        self, _env: Environment, _sense_info: dict[str, bool]
+    ) -> None:
         """
         This method is used to act after not sensing anyting with a
         sensor.
 
-        :param _: The environment to act in.
+        :param _env: The environment to act in.
+        :param _sense_info: The information collected by sensors.
         """
         raise NotImplementedError

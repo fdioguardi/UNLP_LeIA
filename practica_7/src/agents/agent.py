@@ -15,26 +15,29 @@ class Agent(Thing):
     An agent is a thing that can move around an environment.
 
     Attributes:
-        actuator (Actuator): The actuator of the agent.
+        actuators (list[Actuator]): The actuators of the agent.
         performance (int): The performance of the agent.
         position (Position): The position of the agent.
-        sensor (Sensor): The sensor of the agent.
+        sensors (list[Sensor]): The sensors of the agent.
     """
 
     def __init__(
-        self, position: Position, sensor: Sensor, actuator: Actuator
+        self,
+        position: Position,
+        sensors: list[Sensor],
+        actuators: list[Actuator],
     ) -> None:
         """
         Initialize an agent.
 
         :param position: The position of the agent.
-        :param sensor: The sensor of the agent.
-        :param actuator: The actuator of the agent.
+        :param sensors: A list with the sensors of the agent.
+        :param actuators: A list with the actuators of the agent.
         """
         super().__init__(position)
         self.performance: int = 0
-        self.sensor: Sensor = sensor
-        self.actuator: Actuator = actuator
+        self.sensors: list[Sensor] = sensors
+        self.actuators: list[Actuator] = actuators
 
     def move(self, position: Position) -> None:
         """
@@ -51,11 +54,17 @@ class Agent(Thing):
         :param environment: The environment to act in.
         """
 
-        if self.sensor.sense(environment):
-            self.actuator.act_after_sensing(environment)
+        sense_info = {
+            sensor.name: sensor.sense(environment) for sensor in self.sensors
+        }
+
+        if any(sense_info.values()):
+            for actuator in self.actuators:
+                actuator.act_after_sensing(environment, sense_info)
             self.reward_performance()
         else:
-            self.actuator.act_after_not_sensing(environment)
+            for actuator in self.actuators:
+                actuator.act_after_not_sensing(environment, sense_info)
             self.punish_performance()
 
     def reward_performance(self) -> None:

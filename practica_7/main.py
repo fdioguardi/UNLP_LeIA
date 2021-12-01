@@ -1,13 +1,13 @@
 from __future__ import annotations
 
 from src.environments import XYEnvironment
-from src.agents import VacuumAgent
+from src.agents import BreezeVacuumAgent
 from src.positions import Point
 from src.things import Dirt, Hole
 
 
 def main():
-    agent = VacuumAgent(Point(0, 0))
+    agent = BreezeVacuumAgent(Point(0, 0))
     env = XYEnvironment(agent, 16, 16)
 
     # Add dirt to the environment
