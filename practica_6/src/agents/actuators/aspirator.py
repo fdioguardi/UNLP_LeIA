@@ -38,6 +38,7 @@ class AspiratorActuator(Actuator):
         :param environment: The environment in which the actuator acts.
         """
 
+        environment.clear(self.agent.position)
         self.act(environment)
 
     def act_after_not_sensing(self, environment: Environment) -> None:

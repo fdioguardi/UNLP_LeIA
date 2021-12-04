@@ -24,15 +24,18 @@ class BreezeActuator(Actuator):
 
         self.agent: BreezeVacuumAgent = agent
 
-    def act(self, environment: Environment) -> None:
+    def move(self, environment: Environment) -> None:
         """
-        This method is used to perform the actuator's action.
+        This method is used to perform the actuator's movement.
 
-        :param environment: The environment in which the actuator acts.
+        :param environment: The environment in which the actuator moves.
         """
 
         self.agent.move(
-            random.choice(environment.adjacent_positions(self.agent.position))
+            min(
+                environment.adjacent_positions(self.agent.position),
+                key=lambda a: self.agent.memory[a.x][a.y],
+            )
         )
 
     def act_after_sensing(
@@ -40,53 +43,36 @@ class BreezeActuator(Actuator):
     ) -> None:
         """
         This method is used to perform the actuator's action after
-        having sensed dirt or breeze in the environment.
+        having sensed dirt, breeze, or a hole in the environment.
 
         :param environment: The environment in which the actuator acts.
         :param sense_info: The information collected by sensors.
         """
 
         if sense_info["Breeze sensor"]:
-            self.mark_maybe_holes(environment)
-            self.agent.breeze_positions.append(self.agent.position)
-
+            self.agent.add_peligrosity(environment)
+        elif sense_info["Hole sensor"]:
+            self.agent._has_fallen = True
         else:
-            self.unmark_maybe_holes(environment)
-            self.agent.free_positions.append(self.agent.position)
+            self.agent._has_cleaned = environment.clear(self.agent.position)
+            self.agent.remove_peligrosity(environment)
 
-    def mark_maybe_holes(self, environment: Environment):
-        """
-        This method fills the agent's memory with the positions of
-        possible holes.
-
-        :param environment: The environment in which the actuator acts.
-        """
-        self.agent.breeze_positions.append(self.agent.position)
-
-        for pos in environment.adjacent_positions(self.agent.position):
-            if not self.agent.is_known_position(pos):
-                self.agent.maybe_hole_positions.append(pos)
-
-    def unmark_maybe_holes(self, environment: Environment):
-        """
-        This method removes positions that were believed to be holes
-        from the agent's memory.
-
-        :param environment: The environment in which the actuator acts.
-        """
-        for pos in environment.adjacent_positions(self.agent.position):
-            if pos in self.agent.maybe_hole_positions:
-                self.agent.maybe_hole_positions.remove(pos)
+        if not self.agent._has_fallen:
+            self.move(environment)
 
     def act_after_not_sensing(
-        self, environment: Environment, sense_info: dict[str, bool]
+        self, environment: Environment, _: dict[str, bool]
     ) -> None:
         """
         This method is used to perform the actuator's action after not
-        sensing dirt or breeze in the environment.
+        sensing dirt, holes, nor breeze in the environment.
 
         :param environment: The environment in which the actuator acts.
-        :param sense_info: The information collected by sensors.
+        :param _: The information collected by sensors.
         """
 
-        self.act(environment)
+        self.agent.remove_peligrosity(environment)
+        self.agent._has_cleaned = False
+        self.agent._has_fallen = False
+
+        self.move(environment)
