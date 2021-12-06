@@ -21,9 +21,12 @@ class BreezeVacuumAgent(VacuumAgent):
         position?
 
         _has_fallen (bool): did the agent just fell into a hole?
+
+        _known_dirt_level (bool): A bool that represents if agent
+        knows the dirt level in the enviroment.
     """
 
-    def __init__(self, position: Point, dimension: int) -> None:
+    def __init__(self, position: Point, dimension: int, known_dirt_level: bool) -> None:
         """
         Initialize an agent.
 
@@ -43,6 +46,9 @@ class BreezeVacuumAgent(VacuumAgent):
         self._has_fallen: bool
         self._has_fallen = False
         self._has_cleaned = False
+
+        self._known_dirt_level: bool
+        self._known_dirt_level = known_dirt_level
 
     def add_peligrosity(self, env: Environment) -> None:
         """
@@ -95,3 +101,8 @@ class BreezeVacuumAgent(VacuumAgent):
     def graphic_memory(self):
         for row in self.memory:
             print(row)
+
+    def has_cleaned_all_dirt(self, env: Environment):
+        if (self._known_dirt_level):
+            return not env.has_dirt()
+        return False

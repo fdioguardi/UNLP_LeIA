@@ -107,7 +107,9 @@ class BreezeActuator(Actuator):
         if (self.agent._has_cleaned) :
             print("-> Dirt cleaned")
 
-        if not self.agent._has_fallen:
+        if (self.agent.has_cleaned_all_dirt(environment)):
+            self.agent.end()
+        elif not self.agent._has_fallen:
             self.move(environment)
 
     def act_after_not_sensing(

@@ -53,12 +53,11 @@ class Environment:
 
     def is_done(self) -> bool:
         """
-        Check if the environment is done.
+        Check if the agent is done.
 
-        :return: True if there are no things remaining in the
-        environment, False otherwise.
+        :return: True if the agent is done, False otherwise.
         """
-        return (self.things == [] or self.agent.is_done)
+        return self.agent.is_done
 
     def adjacent_positions(self, _: Position) -> list:
         """
@@ -134,3 +133,10 @@ class Environment:
 
     def graphic_map():
         raise NotImplementedError
+    
+    def remaining_dirt(self):
+        return [t for t in self.things if t.is_dirt()]
+    
+    def has_dirt(self):
+        test = any(t.is_dirt() for t in self.things)
+        return test

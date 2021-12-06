@@ -7,7 +7,7 @@ from src.things import Dirt, Hole
 
 
 def main():
-    agent = BreezeVacuumAgent(Point(0, 0), 4)
+    agent = BreezeVacuumAgent(Point(0, 0), 4, True)
     env = XYEnvironment(agent, 4, 4)
 
     # Add dirt to the environment
