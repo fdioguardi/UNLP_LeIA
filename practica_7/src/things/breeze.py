@@ -24,5 +24,11 @@ class Breeze(Thing):
 
         self.position = position
 
-    def graphic(self):
+    def graphic(self) -> str:
+        """
+        Return the representation of Breeze.
+
+        :return: a string representing breeze.
+        """
         return "~"
+

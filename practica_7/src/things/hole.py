@@ -33,8 +33,16 @@ class Hole(Thing):
 
         for adj in env.adjacent_positions(position):
             things = env.things_in_position(adj)
-            if not any(isinstance(t, Hole) or isinstance(t, Breeze) for t in things):
+            if not any(
+                isinstance(t, Hole) or isinstance(t, Breeze) for t in things
+            ):
                 env.add_thing(Breeze(adj))
 
-    def graphic(self):
+    def graphic(self) -> str:
+        """
+        Returns a Hole's representation.
+
+        :return: the string representing a hole.
+        """
         return "o"
+

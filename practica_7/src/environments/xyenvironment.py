@@ -8,7 +8,6 @@ from .environment import Environment
 
 if TYPE_CHECKING:
     from ..agents import Agent
-    from ..positions import Position
     from ..things import Thing
 
 
@@ -47,7 +46,6 @@ class XYEnvironment(Environment):
         :return: the thing to be added to the environment.
         """
         self.things.append(thing)
-
         return thing
 
     def remove_thing(self, thing: Thing) -> None:
@@ -56,7 +54,6 @@ class XYEnvironment(Environment):
 
         :param thing: thing to remove from the environment.
         """
-
         if thing in self.things:
             self.things.remove(thing)
 
@@ -66,20 +63,18 @@ class XYEnvironment(Environment):
 
         :return: a point inbounds of the environment.
         """
-
         return Point(
             random.randint(self.start.x, self.width - 1),
             random.randint(self.start.y, self.height - 1),
         )
 
-    def in_bounds(self, position: Position) -> bool:
+    def in_bounds(self, position: Point) -> bool:
         """
         Returns True if the position is inbounds.
 
         :param position: position to check.
         :return: True if the position is inbounds.
         """
-
         return (
             position.x >= self.start.x
             and position.x < self.width
@@ -87,14 +82,13 @@ class XYEnvironment(Environment):
             and position.y < self.height
         )
 
-    def adjacent_positions(self, position: Position) -> list:
+    def adjacent_positions(self, position: Point) -> list:
         """
         Returns a list of positions adjacent to the given position.
 
         :param position: position to get adjacent positions for.
         :return: A list of positions adjacent to the given position.
         """
-
         adjacent_positions = [
             Point(position.x + 1, position.y),
             Point(position.x - 1, position.y),
@@ -109,6 +103,9 @@ class XYEnvironment(Environment):
         ]
 
     def graphic_map(self):
+        """
+        Outputs the map's representation to stdout.
+        """
         map = [[" " for _ in range(self.width)] for _ in range(self.height)]
         for thing in self.things:
             map[thing.position.x][thing.position.y] = thing.graphic()

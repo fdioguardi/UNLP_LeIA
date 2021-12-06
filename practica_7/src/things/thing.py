@@ -32,8 +32,10 @@ class Thing:
 
         return self.position == other.position
 
-    def graphic(self):
-        raise NotImplementedError
+    def graphic(self) -> str:
+        """
+        Returns the representation of the thing.
 
-    def is_dirt(self):
-        return False
+        :return: the thing's representation.
+        """
+        raise NotImplementedError

@@ -24,8 +24,10 @@ class Dirt(Thing):
 
         self.position = position
 
-    def graphic(self):
-        return "*"
+    def graphic(self) -> str:
+        """
+        Returns the Dirt's representation.
 
-    def is_dirt(self):
-        return True
+        :return: the string representing dirt.
+        """
+        return "*"

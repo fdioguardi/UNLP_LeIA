@@ -81,7 +81,14 @@ class Agent(Thing):
         raise NotImplementedError
 
     def end(self):
+        """
+        Set an ending to the agent's journey.
+        """
         self.is_done = True
 
     def graphic_memory(self):
+        """
+        Outputs a representation of the agent's memory to stdout.
+        """
         print("No memory")
+

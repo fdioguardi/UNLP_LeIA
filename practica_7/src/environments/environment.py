@@ -1,6 +1,8 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING
 
+from ..things import Dirt
+
 if TYPE_CHECKING:
     from ..agents import Agent
     from ..positions import Position
@@ -29,10 +31,11 @@ class Environment:
         :param steps: number of time steps to run the environment.
         :return: True if the environment is done, False otherwise.
         """
-        for _ in range(steps):
+        for step in range(steps):
             if self.is_done():
                 return True
-            print("\n---------- STEP " + str(_) + " ----------\n")
+
+            print("\n---------- STEP " + str(step) + " ----------\n")
             print("< MAP >")
             self.graphic_map()
             print("\n< ACTIONS >")
@@ -105,7 +108,7 @@ class Environment:
         """
         return [t for t in self.things if t.overlaps(thing)]
 
-    def clear(self, position: Position) -> bool:
+    def clear(self, position: Position):
         """
         Remove all things at the given position.
 
@@ -117,26 +120,34 @@ class Environment:
 
     def things_in_position(self, position: Position) -> list:
         """
-        Returns a list of things in the given thing.
+        Returns a list of things in the given position.
 
         :param position: The position to check for things.
         :return: A list of things with the given position.
         """
         return [t for t in self.things if (t.position == position)]
 
-    def clean_dirt_in_position(self, position: Position):
+    def clean_dirt_in_position(self, position: Position) -> bool:
+        """
+        Removes all dirt in a certain position.
+
+        :param position: The position to clean.
+        :return: was there any dirt to be claned?
+        """
         for thing in self.things:
-            if thing.is_dirt() and thing.position == position:
+            if isinstance(thing, Dirt) and thing.position == position:
                 self.things.remove(thing)
                 return True
         return False
 
-    def graphic_map():
+    def graphic_map(self):
+        """
+        Outputs the map's representation to stdout.
+        """
         raise NotImplementedError
-    
-    def remaining_dirt(self):
-        return [t for t in self.things if t.is_dirt()]
-    
-    def has_dirt(self):
-        test = any(t.is_dirt() for t in self.things)
-        return test
+
+    def has_dirt(self) -> bool:
+        """
+        Returns if there's any dirt left in the environment.
+        """
+        return any(isinstance(t, Dirt) for t in self.things)
