@@ -32,14 +32,15 @@ class Environment:
         for _ in range(steps):
             if self.is_done():
                 return True
-            print("---------- PASO " + str(_) + " ----------")
-            print("< MAPA ACTUAL >")
+            print("\n---------- STEP " + str(_) + " ----------\n")
+            print("< MAP >")
             self.graphic_map()
+            print("\n< ACTIONS >")
             self.step()
-            print("< MEMORIA ACTUAL >")
+            print("\n< MEMORY >")
             self.agent.graphic_memory()
+            print("\n----------------------------\n")
             input("Press a key to continue...")
-            print()
 
         return self.is_done()
 

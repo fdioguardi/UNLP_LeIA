@@ -5,7 +5,6 @@ from typing import TYPE_CHECKING
 from ..positions import Point
 
 from .environment import Environment
-import numpy as np
 
 if TYPE_CHECKING:
     from ..agents import Agent
@@ -114,4 +113,5 @@ class XYEnvironment(Environment):
         for thing in self.things:
             map[thing.position.x][thing.position.y] = thing.graphic()
         map[self.agent.position.x][self.agent.position.y] = "A"
-        print(np.matrix(map))
+        for row in map:
+            print(row)

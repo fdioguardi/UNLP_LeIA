@@ -89,18 +89,18 @@ class BreezeActuator(Actuator):
 
         
         if sense_info["Hole sensor"]:
-            print("-> Hole detected <-")
+            print("-> Hole detected")
             self.agent._has_fallen = True
             self.agent.end()
         elif sense_info["Breeze sensor"]:
-            print("-> Breeze detected <-")
+            print("-> Breeze detected")
             self.agent.add_peligrosity(environment)
         else:
             self.agent.remove_peligrosity(environment)
 
         self.agent._has_cleaned = environment.clean_dirt_in_position(self.agent.position)
         if (self.agent._has_cleaned) :
-            print("-> Dirt cleaned <-")
+            print("-> Dirt cleaned")
 
         if not self.agent._has_fallen:
             self.move(environment)

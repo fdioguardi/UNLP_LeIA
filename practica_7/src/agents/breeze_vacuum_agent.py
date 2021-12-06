@@ -5,8 +5,6 @@ from .vacuum_agent import VacuumAgent
 from .sensors import BreezeSensor, DirtSensor, HoleSensor
 from .actuators import BreezeActuator
 
-import numpy as np
-
 if TYPE_CHECKING:
     from ..positions import Point
     from ..environments import Environment
@@ -95,4 +93,5 @@ class BreezeVacuumAgent(VacuumAgent):
             self.performance -= 1
 
     def graphic_memory(self):
-        print(np.matrix(self.memory))
+        for row in self.memory:
+            print(row)
