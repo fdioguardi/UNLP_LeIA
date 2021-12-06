@@ -41,8 +41,6 @@ class BreezeVacuumAgent(VacuumAgent):
         self.position: Point = position
         self.memory = [[1 for _ in range(dimension)] for _ in range(dimension)]
 
-        self.memory[0][0] = 2
-
         self._has_cleaned: bool
         self._has_fallen: bool
         self._has_fallen = False
