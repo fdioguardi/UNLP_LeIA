@@ -28,9 +28,13 @@ class Hole(Thing):
 
         self.position = position
 
+        if env.things_in_position(position):
+            env.clear(position)
+
         for adj in env.adjacent_positions(position):
-            breeze = Breeze(adj)
-            things = env.overlapping_with(breeze)
-            if things and not any(isinstance(t, Hole) for t in things):
-                env.clear(adj)
-                env.add_thing(breeze)
+            things = env.things_in_position(adj)
+            if not any(isinstance(t, Hole) or isinstance(t, Breeze) for t in things):
+                env.add_thing(Breeze(adj))
+
+    def graphic(self):
+        return "o"

@@ -5,6 +5,8 @@ from .vacuum_agent import VacuumAgent
 from .sensors import BreezeSensor, DirtSensor, HoleSensor
 from .actuators import BreezeActuator
 
+import numpy as np
+
 if TYPE_CHECKING:
     from ..positions import Point
     from ..environments import Environment
@@ -13,9 +15,8 @@ if TYPE_CHECKING:
 class BreezeVacuumAgent(VacuumAgent):
     """
     A Vacuum Agent with memory. The memory is represented as a matrix.
-    A negative value in the matrix means that point in the environment
-    is free. Positive values indicate the level of danger of each point.
-    The higher the value, the greater the danger.
+    A positive value in the matrix means that point in the environment
+    is free. Negative values indicate the level of danger of each point.
 
     Attributes:
         _has_cleaned (bool): did the agent just clean the current
@@ -24,11 +25,12 @@ class BreezeVacuumAgent(VacuumAgent):
         _has_fallen (bool): did the agent just fell into a hole?
     """
 
-    def __init__(self, position: Point) -> None:
+    def __init__(self, position: Point, dimension: int) -> None:
         """
         Initialize an agent.
 
         :param position: The position of the agent.
+        :param dimension: The dimension of the memory matrix.
         """
         super().__init__(
             position,
@@ -37,12 +39,14 @@ class BreezeVacuumAgent(VacuumAgent):
         )
 
         self.position: Point = position
-        self.memory = [[0 for _ in range(16)] for _ in range(16)]
+        self.memory = [[1 for _ in range(dimension)] for _ in range(dimension)]
 
-        self.memory[0][0] = -1
+        self.memory[0][0] = 2
 
         self._has_cleaned: bool
         self._has_fallen: bool
+        self._has_fallen = False
+        self._has_cleaned = False
 
     def add_peligrosity(self, env: Environment) -> None:
         """
@@ -52,11 +56,14 @@ class BreezeVacuumAgent(VacuumAgent):
         :param env: The environment in which the agent is acting.
         """
 
-        self.memory[self.position.x][self.position.y] = -1
+        if (self.memory[self.position.x][self.position.y] == 2):
+            return
+
+        self.memory[self.position.x][self.position.y] = 2
 
         for adj in env.adjacent_positions(self.position):
-            if self.memory[adj.x][adj.y] != -1:
-                self.memory[adj.x][adj.y] += 1
+            if self.memory[adj.x][adj.y] != 2:
+                self.memory[adj.x][adj.y] -= 1
 
     def remove_peligrosity(self, env: Environment) -> None:
         """
@@ -65,17 +72,20 @@ class BreezeVacuumAgent(VacuumAgent):
 
         :param env: The environment in which the agent is acting.
         """
-
-        self.memory[self.position.x][self.position.y] = -1
+        if (self.memory[self.position.x][self.position.y] == 2):
+            return
+            
+        self.memory[self.position.x][self.position.y] = 2
         for adj in env.adjacent_positions(self.position):
-            self.memory[adj.x][adj.y] = -1
+            if (self.memory[adj.x][adj.y] != 2):
+                self.memory[adj.x][adj.y] = 1
 
     def reward_performance(self) -> None:
         """
         Reward the agent for sensing something.
         """
         if self._has_cleaned:
-            self.performance += 1
+            self.performance += 5
         elif self._has_fallen:
             self.performance -= 1000
 
@@ -85,3 +95,6 @@ class BreezeVacuumAgent(VacuumAgent):
         """
         if not self._has_cleaned:
             self.performance -= 1
+
+    def graphic_memory(self):
+        print(np.matrix(self.memory))

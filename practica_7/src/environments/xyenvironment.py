@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING
 from ..positions import Point
 
 from .environment import Environment
-
+import numpy as np
 
 if TYPE_CHECKING:
     from ..agents import Agent
@@ -47,8 +47,7 @@ class XYEnvironment(Environment):
         :param thing: thing to add to the environment.
         :return: the thing to be added to the environment.
         """
-        if not self.overlaps(thing):
-            self.things.append(thing)
+        self.things.append(thing)
 
         return thing
 
@@ -109,3 +108,10 @@ class XYEnvironment(Environment):
             for adjacent_position in adjacent_positions
             if self.in_bounds(adjacent_position)
         ]
+
+    def graphic_map(self):
+        map = [[" " for _ in range(self.width)] for _ in range(self.height)]
+        for thing in self.things:
+            map[thing.position.x][thing.position.y] = thing.graphic()
+        map[self.agent.position.x][self.agent.position.y] = "A"
+        print(np.matrix(map))

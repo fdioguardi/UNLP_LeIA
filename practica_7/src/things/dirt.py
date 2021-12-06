@@ -23,3 +23,9 @@ class Dirt(Thing):
         """
 
         self.position = position
+
+    def graphic(self):
+        return "*"
+
+    def is_dirt(self):
+        return True

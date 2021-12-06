@@ -31,3 +31,9 @@ class Thing:
         """
 
         return self.position == other.position
+
+    def graphic(self):
+        raise NotImplementedError
+
+    def is_dirt(self):
+        return False

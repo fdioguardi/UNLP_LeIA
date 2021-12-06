@@ -38,6 +38,7 @@ class Agent(Thing):
         self.performance: int = 0
         self.sensors: list[Sensor] = sensors
         self.actuators: list[Actuator] = actuators
+        self.is_done = False
 
     def move(self, position: Position) -> None:
         """
@@ -78,3 +79,9 @@ class Agent(Thing):
         Punish the agent for performing poorly.
         """
         raise NotImplementedError
+
+    def end(self):
+        self.is_done = True
+
+    def graphic_memory(self):
+        print("No memory")

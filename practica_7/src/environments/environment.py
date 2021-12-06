@@ -1,7 +1,6 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING
 
-
 if TYPE_CHECKING:
     from ..agents import Agent
     from ..positions import Position
@@ -33,7 +32,14 @@ class Environment:
         for _ in range(steps):
             if self.is_done():
                 return True
+            print("---------- PASO " + str(_) + " ----------")
+            print("< MAPA ACTUAL >")
+            self.graphic_map()
             self.step()
+            print("< MEMORIA ACTUAL >")
+            self.agent.graphic_memory()
+            input("Press a key to continue...")
+            print()
 
         return self.is_done()
 
@@ -51,7 +57,7 @@ class Environment:
         :return: True if there are no things remaining in the
         environment, False otherwise.
         """
-        return self.things == []
+        return (self.things == [] or self.agent.is_done)
 
     def adjacent_positions(self, _: Position) -> list:
         """
@@ -101,14 +107,29 @@ class Environment:
 
     def clear(self, position: Position) -> bool:
         """
-        Remove the thing at the given position.
+        Remove all things at the given position.
 
         :param position: The position to clear.
-        :return: True if the thing was removed, False otherwise.
         """
         for thing in self.things:
             if thing.position == position:
                 self.things.remove(thing)
-                return True
 
+    def things_in_position(self, position: Position) -> list:
+        """
+        Returns a list of things in the given thing.
+
+        :param position: The position to check for things.
+        :return: A list of things with the given position.
+        """
+        return [t for t in self.things if (t.position == position)]
+
+    def clean_dirt_in_position(self, position: Position):
+        for thing in self.things:
+            if thing.is_dirt() and thing.position == position:
+                self.things.remove(thing)
+                return True
         return False
+
+    def graphic_map():
+        raise NotImplementedError
