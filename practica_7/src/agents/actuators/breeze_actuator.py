@@ -23,9 +23,9 @@ class BreezeActuator(Actuator):
 
         self.agent: BreezeVacuumAgent = agent
         self.visited_positions = []
-        self.posible_positions = []
+        self.posible_path = []
 
-    def search(self, environment, position):
+    def _find(self, environment, position):
         if (position in self.visited_positions):
             return
         self.visited_positions.append(position)
@@ -33,18 +33,33 @@ class BreezeActuator(Actuator):
         # si hay un bloqueo, vuelve
         if (self.agent.memory[position.x][position.y] < 1):
             return
-        # si es una posicion sin descubrir, la agrega a posible
+        # si es una posicion sin descubrir, la guarda
         elif (self.agent.memory[position.x][position.y] == 1):
-            self.posible_positions.append(position)
+            self.posible_path.append(position)
             return
         else:
+            # busca en las posiciones adyacentes solo
+            # si no encontro la posicion sin descubrir
             for pos in environment.adjacent_positions(position):
-                self.search(environment, pos)
+                if not self.has_path():
+                    self._find(environment, pos)
+            if self.has_path():
+                self.posible_path.append(position)
 
-    def search_position(self, environment):
+    def find_new_path(self, environment):
         self.visited_positions = []
-        self.posible_positions = []
-        self.search(environment, self.agent.position)
+        self.posible_path = []
+        self._find(environment, self.agent.position)
+
+        # remueve la posicion actual
+        if (self.has_path()):
+            self.posible_path.pop()
+
+    def has_path(self):
+        return (len(self.posible_path) > 0)
+
+    def next_path_position(self):
+        return self.posible_path.pop()
 
     def move(self, environment: Environment) -> None:
         """
@@ -52,29 +67,19 @@ class BreezeActuator(Actuator):
 
         :param environment: The environment in which the actuator moves.
         """
+        # si hay un camino posible determinado, lo sigue
+        if (self.has_path()):
+            self.agent.move(self.next_path_position())
+            return
 
-        #print("Posicion actual: " + str(self.agent.position.x) + "," + str(self.agent.position.y))
-        self.search_position(environment)
-        if (len(self.posible_positions)):
+        self.find_new_path(environment)
+        if (self.has_path()):
             # se puede mover para algun lado
-            self.agent.move(self.posible_positions[0])
-            pass
+            self.agent.move(self.next_path_position())
         else:
             # no se puede mover más porque está bloqueado
-            # decidimos si terminar el algoritmo acá
-            # o si elegir un lugar peligroso para moverse
-            # con posibilidad de caer en un hoyo
+            # se puede implementar movimiento con probabilidad de caida
             self.agent.end()
-            pass
-        #print("Proxima posicion: " + str(self.agent.position.x) + "," + str(self.agent.position.y))
-        """
-        self.agent.move(
-            min(
-                environment.adjacent_positions(self.agent.position),
-                key=lambda a: self.agent.memory[a.x][a.y],
-            )
-        )
-        """
 
     def act_after_sensing(
         self, environment: Environment, sense_info: dict[str, bool]
