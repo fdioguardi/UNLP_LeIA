@@ -10,13 +10,13 @@ import configparser
 def main():
     config = configparser.ConfigParser()
     config.read("config.ini")
-    
+
     try:
-        agent_knows_dirt = config['params']['agent_knows_dirt']
+        agent_knows_dirt = (config['params']['agent_knows_dirt'] == 'True')
     except:
         agent_knows_dirt = False
 
-    agent = BreezeVacuumAgent(Point(0, 0), 4, False)
+    agent = BreezeVacuumAgent(Point(0, 0), 4, agent_knows_dirt)
     env = XYEnvironment(agent, 4, 4)
 
     # Add dirt to the environment
