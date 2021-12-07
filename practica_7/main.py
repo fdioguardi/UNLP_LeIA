@@ -9,9 +9,9 @@ import configparser
 
 def main():
     config = configparser.ConfigParser()
-    config.read("config.ini")
-
+    
     try:
+        config.read("config.ini")
         agent_knows_dirt = (config['params']['agent_knows_dirt'] == 'True')
     except:
         agent_knows_dirt = False

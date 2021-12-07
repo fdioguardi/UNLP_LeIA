@@ -1,13 +1,34 @@
-# :broom: Agente limpiador
+# :broom: Agente limpiador con memoria
 
-Esta es una implementación en Python de un agente limpiador
-que recoge tierra en un ambiente 2D con obstáculos.
+Esta es una implementación en Python de un agente limpiador con memoria
+que recoge tierra en un ambiente 2D con obstáculos y evita
+caerse en agujeros utilizando un sensor de brizas para aprender el terreno.
 
 ## :nerd_face: Integrantes
 
 - Felipe Dioguardi - 16211/4
 - Leonardo Germán Loza Bonora - 16181/7
 - Julian Marques de Abrantes - 15966/0
+
+## :bulb: Idea general de funcionamiento
+
+La misión del agente es limpiar el ambiente de manera segura, es decir, sin caerse 
+en un pozo. Para lograrlo utiliza una memoria y un sensor de brizas.
+
+Cada vez que el agente visita una habitación comprueba si hay brizas y anota en su
+memoria (con números menores a 1) las habitaciones potencialmente peligrosas. Luego
+calcula la próxima habitación a visitar utilizando un algoritmo DFS para determinar
+un camino seguro por el cual moverse. En el caso de no encontrarlo, termina su ejecución.
+
+Si el agente conoce el nivel de suciedad en el ambiente termina su ejecución
+al limpiar todas las habitaciones sucias o no encontrar un camino seguro.
+
+## :gear: REAS
+
+- Rendimiento: +5 por suciedad limpiada, -1 por movimiento sin limpiar, -1000 por caerse en agujero.
+- Entorno: 16 habitaciones, pozos, brizas, suciedad.
+- Actuadores: Aspiradora y ruedas (concepto de movimiento).
+- Sensores: Sensor de brizas, sensor de suciedad y sensor de agujeros.
 
 ## :computer: Ejecución
 
@@ -17,6 +38,7 @@ desde el directorio `practica_7`:
 ```bash
 python main.py
 ```
+
 Además se cuenta con un archivo de configuración 'config.ini' para
 determinar si el agente conoce el nivel de suciedad del ambiente, la
 cantidad de suciedad y la cantidad de agujeros.
@@ -30,24 +52,24 @@ El código fuente del repositorio se distribuye de la siguiente forma:
 ├── main.py
 └── src
     ├── agents
-    │   ├── actuators
-    │   │   ├── actuator.py
-    │   │   └── aspirator.py
-    │   │   └── breeze_actuator.py
-    │   ├── agent.py
-    │   ├── sensors
-    │   │   └── breeze_sensor.py
-    │   │   ├── dirt_sensor.py
-    │   │   └── hole_sensor.py
-    │   │   └── sensor.py
-    │   └── breeze_vacuum_agent.py
-    │   └── vacuum_agent.py
+    │   ├── actuators
+    │   │   ├── actuator.py
+    │   │   ├── aspirator.py
+    │   │   ├── breeze_actuator.py
+    │   ├── agent.py
+    │   ├── breeze_vacuum_agent.py
+    │   ├── sensors
+    │   │   ├── breeze_sensor.py
+    │   │   ├── dirt_sensor.py
+    │   │   ├── hole_sensor.py
+    │   │   └── sensor.py
+    │   └── vacuum_agent.py
     ├── environments
-    │   ├── environment.py
-    │   └── xyenvironment.py
+    │   ├── environment.py
+    │   └── xyenvironment.py
     ├── positions
-    │   ├── point.py
-    │   └── position.py
+    │   ├── point.py
+    │   ├── position.py
     └── things
         ├── breeze.py
         ├── dirt.py
@@ -77,12 +99,11 @@ El código fuente del repositorio se distribuye de la siguiente forma:
 - [`VacuumAgent`](./src/agents/vacuum_agent.py): representa un agente limpiador.
 
 - [`BreezeVacuumAgent`](./src/agents/breeze_vacuum_agent.py): representa un agente 
-  limpiador con detector de brizas.
+  limpiador con memoria y detector de brizas.
 
 - [`BreezeActuator`](./src/agents/actuators/breeze_actuator.py): representa al actuador
   de un agente limpiador con detector de brizas.
-  Se encarga de que el agente de aspire tierra en su posición, compruebe si no se ha
-  caido en un agujero, compruebe si hay briza, calcule su próximo destino y se mueva.
+  Se encarga de que el agente aspire tierra en su posición, compruebe que no se haya caido en un pozo, compruebe si hay briza, calcule su próximo destino y se mueva.
 
 - [`AspiratorActuator`](./src/agents/actuators/aspirator.py): representa al actuador
   de un agente limpiador.
