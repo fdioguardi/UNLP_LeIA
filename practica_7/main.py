@@ -5,13 +5,27 @@ from src.agents import BreezeVacuumAgent
 from src.positions import Point
 from src.things import Dirt, Hole
 
+import configparser
 
 def main():
+    config = configparser.ConfigParser()
+    config.read("config.ini")
+    
+    try:
+        agent_knows_dirt = config['params']['agent_knows_dirt']
+    except:
+        agent_knows_dirt = False
+
     agent = BreezeVacuumAgent(Point(0, 0), 4, False)
     env = XYEnvironment(agent, 4, 4)
 
     # Add dirt to the environment
-    for _ in range(env.width * env.height // 2):
+    try:
+        amount_of_dirt = int(config['params']['amount_of_dirt'])
+    except:
+        amount_of_dirt = env.width * env.height // 2
+
+    for _ in range(amount_of_dirt):
         dirt_location = env.random_location_inbounds()
         things = env.things_in_position(dirt_location)
 
@@ -20,7 +34,12 @@ def main():
             env.add_thing(Dirt(dirt_location))
 
     # Add holes to the environment
-    for _ in range(2):
+    try:
+        amount_of_holes = int(config['params']['amount_of_holes'])
+    except:
+        amount_of_holes = 2
+    
+    for _ in range(amount_of_holes):
         location = env.random_location_inbounds()
 
         # evita el inicio
